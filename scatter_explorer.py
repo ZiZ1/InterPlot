@@ -39,6 +39,7 @@ def label_point(fig, ax, scatter_object,labels,highlight_color='red',remove_on_c
     Provides infrastructure for interactive labeling of scatter plots.
     
     parameters:
+    fig : matplotlib.figure.Figure
     ax : matplotlib.axes._subplots.AxesSubplot object
     scatter_object : matplotlib.collections.PathCollection
     highlight_color : str
