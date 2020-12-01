@@ -96,4 +96,4 @@ def plot_2d_map(n_res,
             for jdx in range(0,n_res):
                 if (highlight_matrix[idx, jdx] == 1.):
                      plt.plot([idx+1],[jdx+1], marker='s', ms=7, color='black', fillstyle='none', zorder=5, linewidth=0.)
-    return fig
+    return fig, cb
