@@ -57,6 +57,10 @@ def make_colormap(seq):
 def plot_2d_map(n_res,
                 matrix,
                 highlight_matrix=None,
+                cmap='rvb',
+                vmin=None,
+                vmax=None,
+                invert_map = False
                 ):
     """
     Plot square 2d map.
@@ -96,23 +100,34 @@ def plot_2d_map(n_res,
         plt.plot(xx*0.+idx, xx, linewidth=0.5, color ='gray',alpha=0.8,zorder=3)
         plt.plot(xx, xx*0.+idx, linewidth=0.5, color ='gray',alpha=0.8,zorder=3)
 
-
-    vmin = np.min(matrix)
-    vmax = np.max(matrix)
+    if vmin is None:
+        vmin = np.min(matrix)
+    if vmax is None:
+        vmax = np.max(matrix)
     string = "%s%8.3f%s%8.3f" % ('Value Min = ', vmin, 'Value Max =', vmax)
     print(string)
 
-    dv=vmax+abs(vmin)
-    mid = abs(vmin)/dv
+    if cmap_name == 'rvb':
+        dv=vmax+abs(vmin)
+        mid = abs(vmin)/dv
 
-    c = mcolors.ColorConverter().to_rgb
-    frac = 1.-abs(vmin)/vmax
-    cred = (1, frac, frac)
-    rvb = make_colormap([cred, c('white'),  mid, c('white'), c('blue')])
+        c = mcolors.ColorConverter().to_rgb
+        frac = 1.-abs(vmin)/vmax
+        cred = (1, frac, frac)
+        rvb = make_colormap([cred, c('white'),  mid, c('white'), c('blue')])
 
-    plt.register_cmap(name=rvb.name, cmap=rvb)
-    plt.register_cmap(name='rvb', cmap=rvb)
-    plt.set_cmap(rvb)
+        plt.register_cmap(name=rvb.name, cmap=rvb)
+        plt.register_cmap(name='rvb', cmap=rvb)
+        plt.set_cmap(rvb)
+
+    else:
+        cmap = asymmetric_divergent_cm(cmap_name,
+                                       vmin,
+                                       vmax,
+                                       divergence_point=0.0,
+                                       invert=invert_map,
+                                        cmap_resolution=1000)
+        plt.set_cmap(cmap)
 
     tol = 1e-06
 
