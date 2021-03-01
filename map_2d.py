@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib.lines import Line2D
+from matplotlib.colors import ListedColormap, LinearSegmentedColormap
 """
 Plot discrete square 2d map
 """
@@ -107,7 +108,7 @@ def plot_2d_map(n_res,
     string = "%s%8.3f%s%8.3f" % ('Value Min = ', vmin, 'Value Max =', vmax)
     print(string)
 
-    if cmap_name == 'rvb':
+    if cmap == 'rvb':
         dv=vmax+abs(vmin)
         mid = abs(vmin)/dv
 
@@ -115,25 +116,30 @@ def plot_2d_map(n_res,
         frac = 1.-abs(vmin)/vmax
         cred = (1, frac, frac)
         rvb = make_colormap([cred, c('white'),  mid, c('white'), c('blue')])
-
+        print(rvb)
         plt.register_cmap(name=rvb.name, cmap=rvb)
         plt.register_cmap(name='rvb', cmap=rvb)
-        plt.set_cmap(rvb)
+        #plt.set_cmap(rvb)
+        current_cmap = rvb
 
     else:
-        cmap = asymmetric_divergent_cm(cmap_name,
+        new_cmap = asymmetric_divergent_cm(cmap,
                                        vmin,
                                        vmax,
                                        divergence_point=0.0,
                                        invert=invert_map,
                                         cmap_resolution=1000)
-        plt.set_cmap(cmap)
+        print(new_cmap)
+        plt.register_cmap(name=new_cmap.name,cmap=new_cmap)
+        plt.register_cmap(name='current', cmap=new_cmap)
+        plt.set_cmap(new_cmap)
+        current_cmap = new_cmap
 
     tol = 1e-06
 
     edges = np.arange(0.5, n_res+1, 1)
 
-    qmesh = plt.pcolormesh(edges, edges, matrix.T, vmin=vmin, vmax=vmax, cmap='rvb',zorder=2)
+    qmesh = plt.pcolormesh(edges, edges, matrix.T, vmin=vmin, vmax=vmax, cmap=current_cmap, zorder=2)
     plt.plot([0, n_res + 1], [0, n_res + 1], color="k", linewidth=2, zorder=4)
     cb = plt.colorbar(qmesh)
     cb.set_label("Contact energy, kJ/(K*mol)", size=16)
